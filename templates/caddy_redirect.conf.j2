@@ -1,0 +1,35 @@
+https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
+    tls chaifeng@chaifeng.com
+{% if virtualhost_bind_address %}
+    bind {{ virtualhost_bind_address }}
+{% endif %}
+
+    root {{ virtualhost_document_root }}
+    gzip
+{% if virtualhost_caddy.timeouts is defined %}
+    timeouts {{ virtualhost_caddy.timeouts }}
+{% endif %}
+
+    header / {
+        Strict-Transport-Security "max-age=63072000; preload"
+        Server "Microsoft-IIS/8.5"
+        X-Powered-By "ASP.NET"
+    }
+
+    redir {{ virtualhost_redirect_to }}
+
+    log / {{ virtualhost_logdir }}/access.log "{remote} - [{when}] \"{method} {uri}\" \"{>User-Agent}\"" {
+        rotate {
+            size 20 # Rotate after 100 MB
+            age  128  # Keep log files for 14 days
+            keep 128  # Keep at most 10 log files
+        }
+    }
+    errors {
+        log {{ virtualhost_logdir }}/error.log {
+            size 20
+            age 128
+            keep 32
+        }
+    }
+}
