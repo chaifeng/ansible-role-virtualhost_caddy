@@ -6,6 +6,9 @@ https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
 
     root {{ virtualhost_document_root }}
     gzip
+{% if virtualhost_caddy.timeouts is defined %}
+    timeouts {{ virtualhost_caddy.timeouts }}
+{% endif %}
 
     header / {
         Strict-Transport-Security "max-age=63072000; preload"
