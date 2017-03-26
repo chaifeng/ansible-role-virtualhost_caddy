@@ -7,3 +7,5 @@
 - name: Virtualhost {{ virtualhost_domain }} | "{{ virtualhost_template }}"
   template: src="{{ virtualhost_template_file }}" dest="{{ caddy_etc_dir }}/sites/{{ virtualhost_domain }}.conf"
   notify: Reload caddy server
+  tags:
+    - virtualhost_conf
