@@ -1,17 +1,3 @@
-https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
-    tls chaifeng@chaifeng.com
-{% if virtualhost_bind_address %}
-    bind {{ virtualhost_bind_address }}
-{% endif %}
-
-    root {{ virtualhost_document_root }}
-    gzip
-{% if virtualhost_caddy.timeouts is defined %}
-    timeouts {{ virtualhost_caddy.timeouts }}
-{% endif %}
-
-{% include "fragment_caddy_header.conf.j2" %}
-
 {% if virtualhost_proxy_port is defined and virtualhost_proxy_port -%}
   {%- set proxy_port = ":" ~ virtualhost_proxy_port -%}
 {%- else -%}
@@ -39,6 +25,3 @@ https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
 {% endfor %}{% endif %}
     }
 
-{% include "fragment_caddy_log.conf.j2" %}
-
-}
