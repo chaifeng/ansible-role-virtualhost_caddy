@@ -16,10 +16,15 @@ https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
         X-Powered-By "ASP.NET"
     }
 
-{% if virtualhost_proxy is string -%}
-  {%- set proxy = virtualhost_proxy -%}
+{% if virtualhost_proxy_port is defined and virtualhost_proxy_port -%}
+  {%- set proxy_port = ":" ~ virtualhost_proxy_port -%}
 {%- else -%}
-  {%- set proxy = virtualhost_proxy | join(" ") -%}
+  {%- set proxy_port = "" -%}
+{%- endif -%}
+{%- if virtualhost_proxy is string -%}
+  {%- set proxy = virtualhost_proxy ~ proxy_port -%}
+{%- else -%}
+  {%- set proxy = virtualhost_proxy | join(proxy_port ~ " ") ~ proxy_port -%}
 {%- endif %}
 {% if virtualhost_websocket is defined and virtualhost_websocket %}
     proxy {{ virtualhost_websocket }} {{ proxy }} {
