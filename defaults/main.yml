@@ -10,4 +10,6 @@ virtualhost_proxy_except: []
 virtualhost_template_file: "{{ virtualhost_web_server }}_{{ virtualhost_template }}.conf.j2"
 virtualhost_logdir: "{{ caddy_site_logdir }}/{{ virtualhost_domain }}"
 
+virtualhost_header: {}
+
 virtualhost_caddy: {}
