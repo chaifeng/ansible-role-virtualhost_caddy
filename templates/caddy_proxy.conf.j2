@@ -16,13 +16,26 @@ https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
         X-Powered-By "ASP.NET"
     }
 
-    proxy / {{ virtualhost_proxy }} {
+{% if virtualhost_proxy is string -%}
+  {%- set proxy = virtualhost_proxy -%}
+{%- else -%}
+  {%- set proxy = virtualhost_proxy | join(" ") -%}
+{%- endif %}
+{% if virtualhost_websocket is defined and virtualhost_websocket %}
+    proxy {{ virtualhost_websocket }} {{ proxy }} {
+        websocket
+    }
+{% endif %}
+    proxy / {{ proxy }} {
         transparent
 {% if virtualhost_proxy_except is string %}
         except {{ virtualhost_proxy_except }}
 {% elif virtualhost_proxy_except | count > 0 %}
         except {{ virtualhost_proxy_except | join(' ') }}
 {% endif %}
+{% if virtualhost_caddy.proxy is defined %}{% for item in virtualhost_caddy.proxy %}
+        {{ item }}
+{% endfor %}{% endif %}
     }
 
     log / {{ virtualhost_logdir }}/access.log "{remote} - [{when}] \"{method} {uri}\" \"{>User-Agent}\"" {
