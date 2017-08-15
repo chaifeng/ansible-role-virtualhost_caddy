@@ -10,10 +10,12 @@
 {%- endif %}
 {% if virtualhost_websocket is defined and virtualhost_websocket %}
     proxy {{ virtualhost_websocket }} {{ proxy }} {
+        fail_timeout 1m
         websocket
     }
 {% endif %}
     proxy / {{ proxy }} {
+        fail_timeout 1m
         transparent
 {% if virtualhost_proxy_except is string %}
         except {{ virtualhost_proxy_except }}
