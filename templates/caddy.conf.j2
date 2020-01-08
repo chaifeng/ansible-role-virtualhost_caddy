@@ -1,5 +1,9 @@
 https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
+{% if virtualhost_le_cert is defined %}
+    tls /etc/letsencrypt/acme.sh/{{ virtualhost_le_cert }}/fullchain.cer /etc/letsencrypt/acme.sh/{{ virtualhost_le_cert }}/{{ virtualhost_le_cert }}.key
+{% else %}
     tls chaifeng@chaifeng.com
+{% endif %}
 {% if virtualhost_bind_address %}
     bind {{ virtualhost_bind_address }}
 {% endif %}
@@ -16,20 +20,18 @@ https://{{ virtualhost_domain }}:{{ virtualhost_port }} {
         X-Powered-By "ASP.NET"
     }
 
+    timeouts none
+
 {% include "caddy_fragment_" ~ virtualhost_template ~ ".j2" %}
 
     log / {{ virtualhost_logdir }}/access.log "{remote} - [{when}] \"{method} {uri}\" \"{>User-Agent}\"" {
-        rotate {
-            size 20 # Rotate after 100 MB
-            age  128  # Keep log files for 14 days
-            keep 128  # Keep at most 10 log files
-        }
+        rotate_size 20 # Rotate after 100 MB
+        rotate_age  128  # Keep log files for 14 days
+        rotate_keep 128  # Keep at most 10 log files
     }
-    errors {
-        log {{ virtualhost_logdir }}/error.log {
-            size 20
-            age 128
-            keep 32
-        }
+    errors {{ virtualhost_logdir }}/error.log {
+        rotate_size 20
+        rotate_age 128
+        rotate_keep 32
     }
 }

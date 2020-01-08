@@ -1,4 +1,5 @@
 virtualhost_web_server: caddy
+virtualhost_port: 443
 virtualhost_domain: localhost
 virtualhost_bind_address: ~
 virtualhost_template: default
